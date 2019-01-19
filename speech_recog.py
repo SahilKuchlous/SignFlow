@@ -1,15 +1,18 @@
-import speech_recognition as sr  
-
-r = sr.Recognizer()  
-with sr.Microphone() as source:  
-  print("Please wait. Calibrating microphone...")    
-  r.adjust_for_ambient_noise(source, duration=5)  
-  print("Say something!")  
-  audio = r.listen(source)  
-
-try:  
-  print("Sphinx thinks you said '" + r.recognize_sphinx(audio) + "'")  
-except sr.UnknownValueError:  
-  print("Sphinx could not understand audio")  
-except sr.RequestError as e:  
-  print("Sphinx error; {0}".format(e))
+# remember to remove the debuggers
+import speech_recognition as sr
+import pyaudio
+recog = sr.Recognizer()
+mic = sr.Microphone()
+with mic as source:
+    print(1)
+    recog.adjust_for_ambient_noise(source)
+    audio = recog.listen(source)
+print(2)
+r = recog.recognize_google(audio).upper()
+print(r)
+print(3)
+text = open("dataStorage.txt", "w")
+for i in r:
+    if ord(i) != 32:
+        text.write(i+"\n")
+text.close()
