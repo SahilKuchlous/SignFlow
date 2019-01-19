@@ -8,24 +8,28 @@ vs = VideoStream(src=0).start()
 time.sleep(1.0)
 fps = FPS().start()
 
+def draw(x1, x2, y1, y2, label):
+	# draw the prediction on the frame
+	cv2.rectangle(frame, (x1, y1), (x2, y2),(0,255,0), 2)
+	y = y1 - 15 if y1 - 15 > 15 else y1 + 15
+	cv2.putText(frame, label, (x1, y),
+		cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,255,0), 2)
+
 while True:
 	frame = vs.read()
 	frame = imutils.resize(frame, width=400)
 
+	draw(15,152,53,199)
+
 	cv2.imshow("Frame", frame)
 	key = cv2.waitKey(1) & 0xFF
 
-	# if the `q` key was pressed, break from the loop
 	if key == ord("q"):
 		break
 
-	# update the FPS counter
 	fps.update()
 
-# stop the timer and display FPS information
 fps.stop()
-print("[INFO] elapsed time: {:.2f}".format(fps.elapsed()))
-print("[INFO] approx. FPS: {:.2f}".format(fps.fps()))
-
-# do a bit of cleanup
+print("Elapsed time: {:.2f}".format(fps.elapsed()))
+print("Approx. FPS: {:.2f}".format(fps.fps()))
 cv2.destroyAllWindows()
