@@ -19,7 +19,7 @@ while True:
 	frame = vs.read()
 	frame = imutils.resize(frame, width=400)
 
-	draw(15,152,53,199)
+	draw(15,152,53,199,"Test")
 
 	cv2.imshow("Frame", frame)
 	key = cv2.waitKey(1) & 0xFF
