@@ -9,7 +9,6 @@ time.sleep(1.0)
 fps = FPS().start()
 
 def draw(x1, x2, y1, y2, label):
-	# draw the prediction on the frame
 	cv2.rectangle(frame, (x1, y1), (x2, y2),(0,255,0), 2)
 	y = y1 - 15 if y1 - 15 > 15 else y1 + 15
 	cv2.putText(frame, label, (x1, y),
@@ -22,6 +21,7 @@ while True:
 	draw(15,152,53,199,"Test")
 
 	cv2.imshow("Frame", frame)
+#	cv2.imwrite(size_test.jpg,frame,[int(cv2.IMWRITE_JPEG_QUALITY), 90])
 	key = cv2.waitKey(1) & 0xFF
 
 	if key == ord("q"):
