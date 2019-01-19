@@ -12,29 +12,24 @@ top = Tk()
         can.arc
 """
 
-class GUI:
-    def __init__(self, master):
-        self.master = master
-        master.title("Sign Language Recog and Translation")
-        self.button = Button(master, text = "Begin Stream", command = self.beginStream(master))
-        self.button.pack()
+def beginStream():
 
-    def beginStream(self, master):
-        vc = cv2.VideoCapture(0)
+    vc = cv2.VideoCapture(0)
 
-        if vc.isOpened():
-            rval, frame = vc.read()
-        else:
-            rval = False
+    if vc.isOpened():
+        rval, frame = vc.read()
+    else:
+        rval = False
 
-        while rval:
-            cv2.imshow("Video", frame)
-            rval, frame = vc.read()
-            key = cv2.waitKey(20)
-            if key == 27:
-                break
-        cv2.destroyWindow("Video")
-        
-        
-gui = GUI(top)
+    while rval:
+        cv2.imshow("Video", frame)
+        rval, frame = vc.read()
+        key = cv2.waitKey(20)
+        if key == 27:
+            break
+    cv2.destroyWindow("Video")
+
+button = Button(top, text = "Begin Stream", command=beginStream)
+button.pack()
+
 top.mainloop()
