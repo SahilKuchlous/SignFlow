@@ -1,6 +1,7 @@
 # remember to remove the debuggers
 import speech_recognition as sr
 import pyaudio
+import cv2
 recog = sr.Recognizer()
 mic = sr.Microphone()
 with mic as source:
@@ -15,4 +16,7 @@ text = open("dataStorage.txt", "w")
 for i in r:
     if ord(i) != 32:
         text.write(i+"\n")
+        img = cv2.imread("datasets/Signs/"+i+".jpg")
+        cv2.imshow("img",img)
+        cv2.waitKey()
 text.close()
