@@ -6,18 +6,13 @@ from imutils.video import VideoStream
 from imutils.video import FPS
 import time
 import imutils
+import speech_recognition as sr
+import pyaudio
 
 top = Tk()
 
-"""class MyUtils():
-    def round(self, can, x, y, width, height, rad):
-        can.arc(x, y+rad*2, x+rad*2, y, start = 90, extent = 90, style = ARC)
-        can.line(x+rad, y, x+width-rad, y)
-        can.arc
-"""
-
 def beginStream():
-
+    print("Video Stream starts!")
     vs = VideoStream(src=0).start()
     time.sleep(1.0)
     fps = FPS().start()
@@ -47,7 +42,30 @@ def beginStream():
     print("Approx. FPS: {:.2f}".format(fps.fps()))
     cv2.destroyAllWindows()
 
+def beginRecording():
+    print("Recording starts!")
+    recog = sr.Recognizer()
+    mic = sr.Microphone()
+    
+    with mic as source:
+        recog.adjust_for_ambient_noise(source)
+        audio = recog.listen(source)
+    r = recog.recognize_google(audio).upper()
+    print(r)
+    
+    text = open("dataStorage.txt", "w")
+    for i in r:
+        if ord(i) != 32:
+            text.write(i+"\n")
+
+            img = cv2.imread("datasets\\Signs\\"+i+".jpg")
+            cv2.imshow("img",img)
+            cv2.waitKey()
+    text.close()
+
 button = Button(top, text = "Begin Stream", command=beginStream)
 button.pack()
+button2 = Button(top, text = "Begin Recording", command = beginRecording)
+button2.pack()
 
 top.mainloop()
