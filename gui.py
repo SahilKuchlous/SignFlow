@@ -48,20 +48,22 @@ def beginRecording():
     mic = sr.Microphone()
     
     with mic as source:
-        recog.adjust_for_ambient_noise(source)
-        audio = recog.listen(source)
-    r = recog.recognize_google(audio).upper()
-    print(r)
-    
-    text = open("dataStorage.txt", "w")
-    for i in r:
-        if ord(i) != 32:
-            text.write(i+"\n")
+        try:
+            recog.adjust_for_ambient_noise(source)
+            audio = recog.listen(source)
+            r = recog.recognize_google(audio).upper()
+            print(r)
+            text = open("dataStorage.txt", "w")
+            for i in r:
+                if ord(i) != 32:
+                    text.write(i+"\n")
 
-            img = cv2.imread("datasets\\Signs\\"+i+".jpg")
-            cv2.imshow("img",img)
-            cv2.waitKey()
-    text.close()
+                    img = cv2.imread("datasets\\Signs\\"+i+".jpg")
+                    cv2.imshow("img",img)
+                    cv2.waitKey()
+            text.close()
+        except:
+            print("Error:Inaudible. Try again")
 
 button = Button(top, text = "Begin Stream", command=beginStream)
 button.pack()
