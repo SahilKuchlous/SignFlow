@@ -12,34 +12,55 @@ import pyaudio
 top = Tk()
 
 def beginStream():
-    print("Video Stream starts!")
-    vs = VideoStream(src=0).start()
-    time.sleep(1.0)
-    fps = FPS().start()
+    closed_palm = cv2.CascadeClassifier("Haarcascades/closed_frontal_palm.xml")
+    palm = cv2.CascadeClassifier("Haarcascades/palm.xml")
 
-    def draw(x1, x2, y1, y2, label):
-        cv2.rectangle(frame, (x1, y1), (x2, y2),(0,255,0), 2)
-        y = y1 - 15 if y1 - 15 > 15 else y1 + 15
-        cv2.putText(frame, label, (x1, y),
-            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,255,0), 2)
+    video_capture = cv2.VideoCapture(0)
 
     while True:
-        frame = vs.read()
-        frame = imutils.resize(frame, width=400)
+        ret, frame = video_capture.read()
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-        draw(15,152,53,199,"Test")
+        closed_palms = closed_palm.detectMultiScale(
+                gray,
+                scaleFactor=1.1,
+                minNeighbors=5,
+                minSize=(31, 31),
+                flags=cv2.CASCADE_SCALE_IMAGE
+        )
 
-        cv2.imshow("Frame", frame)
-        key = cv2.waitKey(1) & 0xFF
+        palms = palm.detectMultiScale(
+                gray,
+                scaleFactor=1.1,
+                minNeighbors=6,
+                minSize=(30, 30),
+                flags=cv2.CASCADE_SCALE_IMAGE
+        )
 
-        if key == ord("q"):
-            break
+        for (x, y, w, h) in closed_palms :
+                cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
+                y = y - 15 if y - 15 > 15 else y + 15
+                cv2.putText(frame, "A", (x, y),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,255,0), 2)
+                '''tts = gTTS(text="A", lang='en')
+                tts.save("tts.mp3")
+                os.system("mpg321 tts.mp3")'''
 
-        fps.update()
+        for (x, y, w, h) in palms :
+                cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 255, 0), 2)
+                y = y - 15 if y - 15 > 15 else y + 15
+                cv2.putText(frame, "B", (x, y),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,0), 2)
+                '''tts = gTTS(text="B", lang='en')
+                tts.save("tts.mp3")
+                os.system("mpg321 tts.mp3")'''
 
-    fps.stop()
-    print("Elapsed time: {:.2f}".format(fps.elapsed()))
-    print("Approx. FPS: {:.2f}".format(fps.fps()))
+        cv2.imshow('Video', frame)
+
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+
+    video_capture.release()
     cv2.destroyAllWindows()
 
 def beginRecording():
