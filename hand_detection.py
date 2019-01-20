@@ -1,16 +1,15 @@
 import cv2
 import sys
+from gtts import gTTS
+import os
 
-#cascPath = sys.argv[1]
 closed_palm = cv2.CascadeClassifier("Haarcascades/closed_frontal_palm.xml")
 palm = cv2.CascadeClassifier("Haarcascades/palm.xml")
 
 video_capture = cv2.VideoCapture(0)
 
 while True:
-	# Capture frame-by-frame
 	ret, frame = video_capture.read()
-
 	gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
 	closed_palms = closed_palm.detectMultiScale(
@@ -34,12 +33,18 @@ while True:
 		y = y - 15 if y - 15 > 15 else y + 15
 		cv2.putText(frame, "A", (x, y),
 			cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0,255,0), 2)
+		'''tts = gTTS(text="A", lang='en')
+		tts.save("tts.mp3")
+		os.system("mpg321 tts.mp3")'''
 
 	for (x, y, w, h) in palms :
 		cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 255, 0), 2)
 		y = y - 15 if y - 15 > 15 else y + 15
 		cv2.putText(frame, "B", (x, y),
 			cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,0), 2)
+		'''tts = gTTS(text="B", lang='en')
+		tts.save("tts.mp3")
+		os.system("mpg321 tts.mp3")'''
 
 	cv2.imshow('Video', frame)
 
